@@ -4,6 +4,7 @@ import { ConfigModule } from 'src/config/config.module';
 
 @Module({
   providers: [TwitService],
-  imports: [ConfigModule]
+  imports: [ConfigModule],
+  exports: [TwitService]
 })
 export class TwitModule { }

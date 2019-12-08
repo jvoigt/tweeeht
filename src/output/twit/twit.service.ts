@@ -20,19 +20,15 @@ export class TwitService {
 
         };
         this.twitCon = new Twit(twitOptions);
-
-        // DEBUG
-        this.post({
-            text: 'huhu wie ist das Wetter',
-            imageUrl: '/assets/cat.jpg',
-            // imageUrl: 'https://placekitten.com/200/300'
-        })
-
     }
 
     post(message: TweeehtMessage) {
+        console.log("TWIT GOT", message)
+
         this.uploadMedia(message).subscribe(
             (uploadedMessage) => {
+                console.log("TWIT POST", uploadedMessage)
+
                 this.twitCon.post('statuses/update', { status: uploadedMessage.text, media_ids: [uploadedMessage.imageUrl] }, (err, data, response) => {
                     console.log("TWIT-Data:", data)
                     console.log("TWIT-Err:", err)
@@ -46,24 +42,31 @@ export class TwitService {
 
         const upload$ = new Subject<TweeehtMessage>();
 
-        var mediaFilePath = path.join(__dirname, '../../../' + message.imageUrl);
+        if (!message.imageUrl) {
+            console.log("TWIT- NO MEDIA:", message)
 
-        this.twitCon.postMediaChunked(
-            {
-                file_path: mediaFilePath,
-            }, ((err: Error, data: Twit.Response, response) => {
-                console.log("TWIT-upload:", data, err)
-                if (err) {
-                    upload$.error(err)
-                } else if (data && data['media_id_string']
-                ) {
-                    console.log("TWIT-uplaod_data:", data['media_id_string'])
-                    message.imageUrl = data['media_id_string']
-                    upload$.next(message)
-                }
-            })
-        )
+            upload$.next(message)
+        } else {
+            console.log("TWIT-MEDIA:", message.imageUrl)
+            var mediaFilePath = path.join(__dirname, '../../../' + message.imageUrl);
 
+            this.twitCon.postMediaChunked(
+                {
+                    file_path: mediaFilePath,
+                }, ((err: Error, data: Twit.Response, response) => {
+                    console.log("TWIT-upload:", data, err)
+                    if (err) {
+                        upload$.error(err)
+                    } else if (data && data['media_id_string']
+                    ) {
+                        console.log("TWIT-uplaod_data:", data['media_id_string'])
+                        message.imageUrl = data['media_id_string']
+                        upload$.next(message)
+                    }
+                })
+            )
+
+        }
         return upload$.asObservable();
     }
 
