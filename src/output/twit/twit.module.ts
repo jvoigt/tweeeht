@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TwitService } from './twit.service';
+import { ConfigModule } from 'src/config/config.module';
 
 @Module({
-  providers: [TwitService]
+  providers: [TwitService],
+  imports: [ConfigModule]
 })
-export class TwitModule {}
+export class TwitModule { }
