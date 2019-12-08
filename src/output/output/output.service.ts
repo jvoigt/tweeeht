@@ -9,6 +9,8 @@ export class OutputService {
 
     send(message: TweeehtMessage) {
         console.log("SEND:", message);
-        this.twitService.post(message);
+        this.twitService.post(message).subscribe(result => {
+            console.log("SENT:", result);
+        })
     }
 }

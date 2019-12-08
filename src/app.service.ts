@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { interval } from 'rxjs';
+import { interval, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ContentService } from './content/content/content.service';
 import { TweeehtMessage } from './content/tweeht-message.interface';
@@ -23,7 +23,7 @@ export class AppService {
 
   start() {
 
-    interval(5000).pipe(
+    of(5000).pipe(
       switchMap(tick => {
         return this.contentService.nextTweeehtMessage()
       }

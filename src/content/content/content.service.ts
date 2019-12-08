@@ -6,8 +6,7 @@ import { TweeehtMessage } from '../tweeht-message.interface';
 export class ContentService {
 
     nextTweeehtMessage(): Observable<TweeehtMessage> {
-        const id = Math.random.toString().substr(2, 4);
-
+        const id = Math.random().toString(26).substr(2, 4);
 
         const nextMessage: TweeehtMessage = {
             text: "debug Message" + id

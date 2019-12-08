@@ -4,6 +4,7 @@ import { ConfigService } from 'src/config/config.service';
 import { TweeehtMessage } from 'src/content/tweeht-message.interface';
 import * as Twit from 'twit';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class TwitService {
@@ -25,19 +26,28 @@ export class TwitService {
     post(message: TweeehtMessage) {
         console.log("TWIT GOT", message)
 
-        this.uploadMedia(message).subscribe(
-            (uploadedMessage) => {
-                console.log("TWIT POST", uploadedMessage)
+        return this.uploadMedia(message).pipe(
+            switchMap(
+                (uploadedMessage) => {
+                    console.log("TWIT POST", uploadedMessage)
+                    const status$ = new Subject<any>();
 
-                this.twitCon.post('statuses/update', { status: uploadedMessage.text, media_ids: [uploadedMessage.imageUrl] }, (err, data, response) => {
-                    console.log("TWIT-Data:", data)
-                    console.log("TWIT-Err:", err)
-                    console.log("TWIT-Data:", data)
-                })
-            }
+                    this.twitCon.post('statuses/update', { status: uploadedMessage.text, media_ids: [uploadedMessage.imageUrl] }, (err, data, response) => {
+                        console.log("TWIT-Data:", data)
+                        console.log("TWIT-Err:", err)
+                        console.log("TWIT-Data:", data)
+                        if (err) {
+                            status$.error(err)
+                        } else {
+                            status$.next(data)
+                        }
+                    })
+                    return status$;
+                }
+            )
         )
-
     }
+
     private uploadMedia(message: TweeehtMessage): Observable<TweeehtMessage> {
 
         const upload$ = new Subject<TweeehtMessage>();
