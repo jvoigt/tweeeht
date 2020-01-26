@@ -1,4 +1,4 @@
 export interface TweeehtMessage {
-    text: string;
-    imageUrl?:string;
+  text: string;
+  imageUrl?: string;
 }

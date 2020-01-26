@@ -1,16 +1,15 @@
-
 import { Module } from '@nestjs/common';
 import { ConfigService } from './config.service';
 
 @Module({
+  exports: [ConfigService],
   providers: [
     {
       provide: ConfigService,
-      useValue: new ConfigService('development.env'),
-
-      //      useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),
+      useValue: new ConfigService(
+        `${process.env.NODE_ENV || 'development'}.env`,
+      ),
     },
   ],
-  exports: [ConfigService],
 })
-export class ConfigModule { }
+export class ConfigModule {}

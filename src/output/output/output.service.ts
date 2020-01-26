@@ -4,13 +4,12 @@ import { TwitService } from '../twit/twit.service';
 
 @Injectable()
 export class OutputService {
+  constructor(private twitService: TwitService) {}
 
-    constructor(private twitService: TwitService) { }
-
-    send(message: TweeehtMessage) {
-        console.log("SEND:", message);
-        this.twitService.post(message).subscribe(result => {
-            console.log("SENT:", result);
-        })
-    }
+  send(message: TweeehtMessage) {
+    console.log('SEND:', message);
+    this.twitService.post(message).subscribe(result => {
+      console.log('SENT:', result);
+    });
+  }
 }

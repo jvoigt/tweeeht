@@ -4,14 +4,14 @@ import { TweeehtMessage } from '../tweeht-message.interface';
 
 @Injectable()
 export class ContentService {
+  nextTweeehtMessage(): Observable<TweeehtMessage> {
+    const id = Math.random()
+      .toString(26)
+      .substr(2, 4);
 
-    nextTweeehtMessage(): Observable<TweeehtMessage> {
-        const id = Math.random().toString(26).substr(2, 4);
-
-        const nextMessage: TweeehtMessage = {
-            text: "debug Message" + id
-        }
-        return of(nextMessage);
-    }
-
+    const nextMessage: TweeehtMessage = {
+      text: 'debug Message' + id,
+    };
+    return of(nextMessage);
+  }
 }

@@ -3,8 +3,8 @@ import { TwitService } from './twit.service';
 import { ConfigModule } from 'src/config/config.module';
 
 @Module({
-  providers: [TwitService],
+  exports: [TwitService],
   imports: [ConfigModule],
-  exports: [TwitService]
+  providers: [TwitService],
 })
-export class TwitModule { }
+export class TwitModule {}

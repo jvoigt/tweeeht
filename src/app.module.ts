@@ -6,8 +6,8 @@ import { ContentModule } from './content/content.module';
 import { ConfigModule } from './config/config.module';
 
 @Module({
-  imports: [OutputModule, ContentModule, ConfigModule],
   controllers: [AppController],
+  imports: [OutputModule, ContentModule, ConfigModule],
   providers: [AppService],
 })
 export class AppModule {}

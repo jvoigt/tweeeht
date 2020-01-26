@@ -3,10 +3,8 @@ import { OutputService } from './output/output.service';
 import { TwitModule } from './twit/twit.module';
 
 @Module({
+  exports: [OutputService],
   imports: [TwitModule],
   providers: [OutputService],
-  exports: [
-    OutputService
-  ]
 })
-export class OutputModule { }
+export class OutputModule {}
