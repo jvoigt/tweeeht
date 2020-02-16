@@ -1,4 +1,4 @@
 export const TWITCONST = {
-  bypass_post: true,
-  bypass_upload: true,
+  bypass_post: false,
+  bypass_upload: false,
 };

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import * as path from 'path';
 import { ConfigService } from 'config/config.service';
-import { TweeehtMessage } from 'tweeht-message.interface';
+import { TweeehtMessage, TweeehtMessageStatus } from 'tweeht-message.interface';
 import * as Twit from 'twit';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of, throwError, Subject, ReplaySubject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { TWITCONST } from 'const/twit.const';
 import { Poster } from 'output/poster.interface';
@@ -13,6 +13,9 @@ export class TwitService implements Poster {
   moduleName = 'TWIT';
   private twitCon: Twit;
 
+  private bypassMedia: boolean;
+  private bypassPost: boolean;
+
   constructor(config: ConfigService) {
     const twitOptions = {
       access_token: config.get('TWITTER_ACCESS_TOKEN'),
@@ -20,6 +23,16 @@ export class TwitService implements Poster {
       consumer_key: config.get('TWITTER_CONSUMER_KEY'),
       consumer_secret: config.get('TWITTER_CONSUMER_SECRET'),
     };
+
+    // if value is set in config parse for true/false else use default
+    this.bypassMedia = config.get('TWITTER_BYPASS')
+      ? JSON.parse(config.get('TWITTER_BYPASS'))
+      : TWITCONST.bypass_upload;
+
+    this.bypassPost = config.get('TWITTER_BYPASS')
+      ? JSON.parse(config.get('TWITTER_BYPASS'))
+      : TWITCONST.bypass_post;
+
     this.twitCon = new Twit(twitOptions);
   }
 
@@ -44,7 +57,7 @@ export class TwitService implements Poster {
         '../../../' + message.imageUrl,
       );
 
-      if (TWITCONST.bypass_upload) {
+      if (this.bypassMedia) {
         console.debug('TWIT-UPLOAD-BYPASS', message);
         return of(message);
       } else {
@@ -68,27 +81,48 @@ export class TwitService implements Poster {
     }
   }
 
-  private postTweet(uploadedMessage: TweeehtMessage): Observable<any> {
+  private postTweet(
+    uploadedMessage: TweeehtMessage,
+  ): Observable<TweeehtMessage> {
     console.debug('TWIT-POST', uploadedMessage);
 
-    // if the useage of twitter is bypassed just return BPASS
-    if (TWITCONST.bypass_post) {
+    // use Replace in case the emit happens to fast
+    const postedTweet$ = new ReplaySubject<TweeehtMessage>(1);
+
+    // if the useage of twitter is bypassed just return BYPASS
+    if (this.bypassPost) {
       console.debug('TWIT-POST-BYPASS:', uploadedMessage);
-      return of('BYPASS');
+      uploadedMessage.status = TweeehtMessageStatus.BYPASS;
+      postedTweet$.next(uploadedMessage);
     } else {
+      // TODO: Refactor to helper
+      const twitParams: Twit.Params = { status: uploadedMessage.text };
+
+      if (uploadedMessage.imageUrl) {
+        twitParams.media_ids = [uploadedMessage.imageUrl];
+      }
+
+      console.debug('TWIT-POST body:', uploadedMessage);
       this.twitCon.post(
         'statuses/update',
-        { status: uploadedMessage.text, media_ids: [uploadedMessage.imageUrl] },
-        (err, data, response) => {
+        twitParams,
+        (err: Error, result: Twit.Response & Twit.Twitter.Status, response) => {
           if (err) {
             console.debug('TWIT-POST-ERR:', err);
-            return throwError(err);
+            uploadedMessage.status = TweeehtMessageStatus.ERROR;
+            uploadedMessage.extRef = err;
+
+            postedTweet$.error(uploadedMessage);
           } else {
-            console.debug('TWIT-POST-DATA:', data);
-            of(data);
+            console.debug('TWIT-POST-DATA:', result);
+            uploadedMessage.status = TweeehtMessageStatus.DONE;
+            uploadedMessage.extRef = result.id;
+            postedTweet$.next(uploadedMessage);
           }
         },
       );
     }
+
+    return postedTweet$.asObservable();
   }
 }
