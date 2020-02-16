@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import * as path from 'path';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from 'config/config.service';
-import { TweeehtMessage, TweeehtMessageStatus } from 'tweeht-message.interface';
-import * as Twit from 'twit';
-import { Observable, of, throwError, Subject, ReplaySubject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { TWITCONST } from 'const/twit.const';
 import { Poster } from 'output/poster.interface';
+import * as path from 'path';
+import { Observable, of, ReplaySubject, throwError } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { TweeehtMessage, TweeehtMessageStatus } from 'tweeht-message.interface';
+import * as Twit from 'twit';
+import { TweehtLogger } from 'logger/tweeht-logger';
 
 @Injectable()
 export class TwitService implements Poster {
@@ -16,7 +17,8 @@ export class TwitService implements Poster {
   private bypassMedia: boolean;
   private bypassPost: boolean;
 
-  constructor(config: ConfigService) {
+  constructor(config: ConfigService, private readonly logger: TweehtLogger) {
+    this.logger.setContext('TWIT');
     const twitOptions = {
       access_token: config.get('TWITTER_ACCESS_TOKEN'),
       access_token_secret: config.get('TWITTER_ACCESS_TOKEN_SECRET'),
@@ -37,7 +39,7 @@ export class TwitService implements Poster {
   }
 
   post(message: TweeehtMessage): Observable<TweeehtMessage> {
-    console.debug('TWIT GOT', message);
+    this.logger.debug(`GOT ${message.text}`);
 
     return this.uploadMedia(message).pipe(
       switchMap((uploadedMessage: TweeehtMessage) => {
@@ -48,17 +50,17 @@ export class TwitService implements Poster {
 
   private uploadMedia(message: TweeehtMessage): Observable<TweeehtMessage> {
     if (!message.imageUrl) {
-      console.debug('TWIT- NO MEDIA:', message);
+      this.logger.debug(`NO MEDIA: ${message.text}`);
       return of(message);
     } else {
-      console.debug('TWIT-MEDIA:', message.imageUrl);
+      this.logger.debug('TWIT-MEDIA:', message.imageUrl);
       const mediaFilePath = path.join(
         __dirname,
         '../../../' + message.imageUrl,
       );
 
       if (this.bypassMedia) {
-        console.debug('TWIT-UPLOAD-BYPASS', message);
+        this.logger.debug(`UPLOAD-BYPASS ${message.text}`);
         return of(message);
       } else {
         this.twitCon.postMediaChunked(
@@ -66,12 +68,11 @@ export class TwitService implements Poster {
             file_path: mediaFilePath,
           },
           (err: Error, data: Twit.Response & { media_id_string }, response) => {
-            console.debug('TWIT-UPLOAD:', response, data, err);
             if (err) {
-              console.debug('TWIT-UPLOAD-ERR:', data.media_id_string);
+              this.logger.debug(`UPLOAD-ERR: ${data.media_id_string}`);
               return throwError(err);
             } else if (data && data.media_id_string) {
-              console.debug('TWIT-UPLOAD-DATA:', data.media_id_string);
+              this.logger.debug(`UPLOAD-DATA: ${data.media_id_string}`);
               message.imageUrl = data.media_id_string;
               return of(message);
             }
@@ -84,14 +85,14 @@ export class TwitService implements Poster {
   private postTweet(
     uploadedMessage: TweeehtMessage,
   ): Observable<TweeehtMessage> {
-    console.debug('TWIT-POST', uploadedMessage);
+    this.logger.debug(`POST ${uploadedMessage.text}`);
 
     // use Replace in case the emit happens to fast
     const postedTweet$ = new ReplaySubject<TweeehtMessage>(1);
 
     // if the useage of twitter is bypassed just return BYPASS
     if (this.bypassPost) {
-      console.debug('TWIT-POST-BYPASS:', uploadedMessage);
+      this.logger.debug(`POST BYPASS ${uploadedMessage.text}`);
       uploadedMessage.status = TweeehtMessageStatus.BYPASS;
       postedTweet$.next(uploadedMessage);
     } else {
@@ -102,19 +103,20 @@ export class TwitService implements Poster {
         twitParams.media_ids = [uploadedMessage.imageUrl];
       }
 
-      console.debug('TWIT-POST body:', uploadedMessage);
+      this.logger.debug(`POST BODY: ${twitParams.toString()}`);
       this.twitCon.post(
         'statuses/update',
         twitParams,
         (err: Error, result: Twit.Response & Twit.Twitter.Status, response) => {
           if (err) {
-            console.debug('TWIT-POST-ERR:', err);
+            this.logger.debug(`POST ERR: ${err}`);
+
             uploadedMessage.status = TweeehtMessageStatus.ERROR;
             uploadedMessage.extRef = err;
 
             postedTweet$.error(uploadedMessage);
           } else {
-            console.debug('TWIT-POST-DATA:', result);
+            this.logger.debug(`POST RESULT: ${result}`);
             uploadedMessage.status = TweeehtMessageStatus.DONE;
             uploadedMessage.extRef = result.id;
             postedTweet$.next(uploadedMessage);

@@ -1,14 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { IntervalService } from './interval/interval.service';
+import { Injectable, Logger } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { IntervalService } from './interval/interval.service';
 import { Ticker } from './ticker.interface';
+import { TweehtLogger } from 'logger/tweeht-logger';
 
 @Injectable()
 export class ShedulerService {
   private ticker: Ticker;
-  constructor(private intervalService: IntervalService) {
+  constructor(
+    private intervalService: IntervalService,
+    private readonly logger: TweehtLogger,
+  ) {
+    this.logger.setContext('SHEDULER');
     this.ticker = this.intervalService;
-    console.log('SHEDULER: ticking with', this.getModuleName());
+    this.logger.log(`Ticking with ${this.getModuleName()}`);
   }
 
   getModuleName(): string {
@@ -16,7 +21,7 @@ export class ShedulerService {
   }
 
   getTick(): Observable<number> {
-    console.debug('SHEDULER: INTERVAL');
+    this.logger.debug('TICK');
     return this.ticker.getTick();
   }
 }

@@ -1,15 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { TweeehtMessage } from 'tweeht-message.interface';
-import { TwitService } from './twit/twit.service';
 import { Poster } from './poster.interface';
+import { TwitService } from './twit/twit.service';
+import { TweehtLogger } from 'logger/tweeht-logger';
 
 @Injectable()
 export class OutputService {
   private poster: Poster;
 
-  constructor(private twitService: TwitService) {
+  constructor(
+    private twitService: TwitService,
+    private readonly logger: TweehtLogger,
+  ) {
+    this.logger.setContext('OUTPUT');
     this.poster = this.twitService;
-    console.log('OUTPUT: posting with', this.getModuleName());
+    this.logger.log(`posting with ${this.getModuleName()}`);
   }
 
   getModuleName(): string {
@@ -17,9 +22,9 @@ export class OutputService {
   }
 
   send(message: TweeehtMessage) {
-    console.debug('OUTPUT SEND:', message);
+    this.logger.debug(`SEND: ${message.text}`);
     this.poster.post(message).subscribe(result => {
-      console.debug('OUTPUT SENT:', result);
+      this.logger.debug(`SENT: ${result.text}`);
     });
   }
 }

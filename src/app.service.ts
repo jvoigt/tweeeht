@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { interval, of } from 'rxjs';
+import { TweehtLogger } from 'logger/tweeht-logger';
 import { switchMap } from 'rxjs/operators';
-import { ContentService } from './content/content.service';
-import { TweeehtMessage } from './tweeht-message.interface';
-import { OutputService } from './output/output.service';
 import { ShedulerService } from 'sheduler/sheduler.service';
+import { ContentService } from './content/content.service';
+import { OutputService } from './output/output.service';
+import { TweeehtMessage } from './tweeht-message.interface';
 
 @Injectable()
 export class AppService {
@@ -12,7 +12,9 @@ export class AppService {
     private contentService: ContentService,
     private outputService: OutputService,
     private shedulerService: ShedulerService,
+    private readonly logger: TweehtLogger,
   ) {
+    this.logger.setContext('APP');
     this.start();
   }
 
@@ -21,12 +23,12 @@ export class AppService {
       .getTick()
       .pipe(
         switchMap((tick: number) => {
-          console.log('APP: Tick');
+          this.logger.log('Tick');
           return this.contentService.nextContent();
         }),
       )
       .subscribe((message: TweeehtMessage) => {
-        console.log('APP: Content', message);
+        this.logger.log(`Next Content ${message}`);
         this.outputService.send(message);
       });
   }
