@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { OutputService } from './output/output.service';
+import { OutputService } from './output.service';
 import { TwitModule } from './twit/twit.module';
 
 @Module({

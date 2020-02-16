@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import * as path from 'path';
-import { ConfigService } from 'src/config/config.service';
-import { TweeehtMessage } from 'src/content/tweeht-message.interface';
+import { ConfigService } from 'config/config.service';
+import { TweeehtMessage } from 'tweeht-message.interface';
 import * as Twit from 'twit';
 import { Observable, of, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { TWITCONST } from 'src/const/twit.const';
+import { TWITCONST } from 'const/twit.const';
+import { Poster } from 'output/poster.interface';
 
 @Injectable()
-export class TwitService {
+export class TwitService implements Poster {
+  moduleName = 'TWIT';
   private twitCon: Twit;
 
   constructor(config: ConfigService) {
@@ -21,7 +23,7 @@ export class TwitService {
     this.twitCon = new Twit(twitOptions);
   }
 
-  post(message: TweeehtMessage) {
+  post(message: TweeehtMessage): Observable<TweeehtMessage> {
     console.debug('TWIT GOT', message);
 
     return this.uploadMedia(message).pipe(

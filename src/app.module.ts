@@ -4,10 +4,11 @@ import { AppService } from './app.service';
 import { OutputModule } from './output/output.module';
 import { ContentModule } from './content/content.module';
 import { ConfigModule } from './config/config.module';
+import { ShedulerModule } from './sheduler/sheduler.module';
 
 @Module({
   controllers: [AppController],
-  imports: [OutputModule, ContentModule, ConfigModule],
+  imports: [OutputModule, ContentModule, ConfigModule, ShedulerModule],
   providers: [AppService],
 })
 export class AppModule {}

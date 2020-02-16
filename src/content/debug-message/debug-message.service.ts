@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { Messager } from 'content/messager.interface';
+import { TweeehtMessage } from 'tweeht-message.interface';
 import { Observable, of } from 'rxjs';
-import { TweeehtMessage } from '../tweeht-message.interface';
 
 @Injectable()
-export class ContentService {
-  nextTweeehtMessage(): Observable<TweeehtMessage> {
+export class DebugMessageService implements Messager {
+  moduleName = 'DEBUGMESSAGE';
+
+  getMessage(): Observable<TweeehtMessage> {
     const id = Math.random()
       .toString(26)
       .substr(2, 4);
