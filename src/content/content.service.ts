@@ -17,21 +17,23 @@ export class ContentService {
     private staticService: StaticService,
     private readonly logger: TweehtLogger,
   ) {
-    this.logger.setContext('CONTEXT');
+    this.logger.setContext('CONTENT');
 
     const contentConfig = this.config.get('CONTENT_PROVIDER');
+    this.logger.debug(`Got CONTENT_PROVIDER: ${contentConfig}`);
     // TODO: this should be move to the module
     // a factory should provide the right service
     // But later we may want to connect multiple accounts and flows....
     switch (contentConfig) {
       case 'STATIC':
         this.messager = this.staticService;
+        break;
       case 'DEBUG':
       default:
         this.messager = this.debugMessage;
     }
 
-    this.logger.log('CONTENT: messages from', this.getModuleName());
+    this.logger.log(`Use Messager: ${this.getModuleName()}`);
   }
 
   getModuleName(): string {
@@ -42,7 +44,7 @@ export class ContentService {
     this.logger.debug('GetNext');
     return this.messager.getMessage().pipe(
       tap((message: TweeehtMessage) => {
-        this.logger.debug(`GotNext ${message}`);
+        this.logger.debug(`GotNext ${message.text}, ${message.imageUrl}`);
       }),
     );
   }

@@ -31,7 +31,7 @@ export class IntervalService implements Ticker {
 
   getTick(): Observable<number> {
     return interval(this.period).pipe(
-      startWith(0),
+      // startWith(0),
       tap(() => {
         this.logger.debug('Tick');
       }),

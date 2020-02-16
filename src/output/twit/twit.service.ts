@@ -28,11 +28,11 @@ export class TwitService implements Poster {
 
     // if value is set in config parse for true/false else use default
     this.bypassMedia = config.get('TWITTER_BYPASS')
-      ? JSON.parse(config.get('TWITTER_BYPASS'))
+      ? JSON.parse(config.get('TWITTER_BYPASS')) || TWITCONST.bypass_upload
       : TWITCONST.bypass_upload;
 
     this.bypassPost = config.get('TWITTER_BYPASS')
-      ? JSON.parse(config.get('TWITTER_BYPASS'))
+      ? JSON.parse(config.get('TWITTER_BYPASS')) || TWITCONST.bypass_post
       : TWITCONST.bypass_post;
 
     this.twitCon = new Twit(twitOptions);
@@ -53,11 +53,12 @@ export class TwitService implements Poster {
       this.logger.debug(`NO MEDIA: ${message.text}`);
       return of(message);
     } else {
-      this.logger.debug('TWIT-MEDIA:', message.imageUrl);
+      this.logger.debug(`MEDIA: ${message.imageUrl}`);
       const mediaFilePath = path.join(
         __dirname,
         '../../../' + message.imageUrl,
       );
+      console.log('!!!!!!!!!!!!!!!!!', mediaFilePath);
 
       if (this.bypassMedia) {
         this.logger.debug(`UPLOAD-BYPASS ${message.text}`);
@@ -99,7 +100,7 @@ export class TwitService implements Poster {
       // TODO: Refactor to helper
       const twitParams: Twit.Params = { status: uploadedMessage.text };
 
-      if (uploadedMessage.imageUrl) {
+      if (!this.bypassMedia && uploadedMessage.imageUrl) {
         twitParams.media_ids = [uploadedMessage.imageUrl];
       }
 
