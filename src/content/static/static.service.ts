@@ -42,16 +42,18 @@ export class StaticService implements Messager {
     };
 
     if (this.lines) {
-      const id = Math.ceil(Math.random() * this.lines.length);
+      const id = Math.floor(Math.random() * this.lines.length);
       message.text = this.lines[id];
+      this.logger.debug(`Line: ${id} / ${this.lines.length}`);
     }
 
     if (this.medias) {
-      const id = Math.ceil(Math.random() * this.medias.length);
+      const id = Math.floor(Math.random() * this.medias.length);
       message.imageUrl = this.medias[id];
+      this.logger.debug(`Media: ${id} / ${this.medias.length}`);
     }
 
-    this.logger.debug(`Messages: ${message.text} ${message.imageUrl}`);
+    this.logger.log(`Messages: ${message.text} ${message.imageUrl}`);
     return of(message);
     // return throwError(new Error('Not yet implemented'));
   }

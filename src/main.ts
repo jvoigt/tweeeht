@@ -7,6 +7,6 @@ async function bootstrap() {
     logger: ['error', 'warn', 'debug', 'log'],
   });
   app.useLogger(new TweehtLogger());
-  await app.listen(3000);
+  await app.listen(8000);
 }
 bootstrap();

@@ -28,7 +28,7 @@ export class AppService {
         }),
       )
       .subscribe((message: TweeehtMessage) => {
-        this.logger.log(`Next Content ${message}`);
+        this.logger.log(`Next Content ${message.text}`);
         this.outputService.send(message);
       });
   }

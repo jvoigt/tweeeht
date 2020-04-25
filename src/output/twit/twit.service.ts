@@ -58,8 +58,6 @@ export class TwitService implements Poster {
         __dirname,
         '../../../' + message.imageUrl,
       );
-      console.log('!!!!!!!!!!!!!!!!!', mediaFilePath);
-
       if (this.bypassMedia) {
         this.logger.debug(`UPLOAD-BYPASS ${message.text}`);
         return of(message);
