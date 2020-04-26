@@ -6,6 +6,7 @@ import { DebugMessageService } from './debug-message/debug-message.service';
 import { Messager } from './messager.interface';
 import { StaticService } from './static/static.service';
 import { TweehtLogger } from 'logger/tweeht-logger';
+import { MongoCollectionService } from './mongo-collection/mongo-collection.service';
 
 @Injectable()
 export class ContentService {
@@ -15,6 +16,7 @@ export class ContentService {
     private config: ConfigService,
     private debugMessage: DebugMessageService,
     private staticService: StaticService,
+    private collectionService: MongoCollectionService,
     private readonly logger: TweehtLogger,
   ) {
     this.logger.setContext('CONTENT');
@@ -27,6 +29,9 @@ export class ContentService {
     switch (contentConfig) {
       case 'STATIC':
         this.messager = this.staticService;
+        break;
+      case 'COLLECTION':
+        this.messager = this.collectionService;
         break;
       case 'DEBUG':
       default:
