@@ -7,20 +7,18 @@ import { ContentModule } from './content/content.module';
 import { LoggerModule } from './logger/logger.module';
 import { OutputModule } from './output/output.module';
 import { ShedulerModule } from './sheduler/sheduler.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   controllers: [AppController],
   imports: [
     OutputModule,
-    ContentModule,
-    ConfigModule,
     ShedulerModule,
+    AuthModule,
+    ConfigModule,
+    ContentModule,
     LoggerModule,
-    // TODO: move we convenient
-    // not shure if this is the right location
-    // we should move this import to a DbModule
     MongooseModule.forRoot('mongodb://localhost:27017/tweeeht'),
-
   ],
   providers: [AppService],
 })
