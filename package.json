@@ -24,12 +24,14 @@
     "@nestjs/core": "^6.11.7",
     "@nestjs/mongoose": "^6.4.0",
     "@nestjs/platform-express": "^6.11.7",
+    "@nestjs/swagger": "^4.5.3",
     "@types/twit": "^2.2.23",
     "dotenv": "^8.2.0",
     "mongoose": "^5.9.10",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
+    "swagger-ui-express": "^4.1.4",
     "twit": "^2.2.11"
   },
   "devDependencies": {
