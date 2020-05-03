@@ -5,7 +5,7 @@ services:
     image: mongo:latest
     environment:
       MONGODB_DATABASE: tweeeht
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: changeme
+      # MONGO_INITDB_ROOT_USERNAME: root
+      # MONGO_INITDB_ROOT_PASSWORD: changeme
     ports:
       - 27017:27017

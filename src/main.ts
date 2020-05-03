@@ -15,7 +15,7 @@ async function bootstrap() {
     .setTitle('Tweeeht')
     .setDescription('A simple twitterbot programmed with schlieferbebis in mind.')
     .setVersion('1.0')
-    // .addTag('') //FIXME: use tags when some endpoints are ready
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);

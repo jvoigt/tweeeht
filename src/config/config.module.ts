@@ -7,13 +7,7 @@ import { TweehtLogger } from 'logger/tweeht-logger';
   exports: [ConfigService],
   imports: [LoggerModule],
   providers: [
-    {
-      provide: ConfigService,
-      useValue: new ConfigService(
-        `${process.env.NODE_ENV || 'development'}.env`,
-        new TweehtLogger(),
-      ),
-    },
+    ConfigService,
   ],
 })
 export class ConfigModule { }
