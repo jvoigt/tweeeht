@@ -26,9 +26,25 @@ export class AppController {
     name: 'Bearer',
   })
   @ApiTags('Test')
-  @Roles()
+  @Roles('any')
   @UseGuards(RolesGuard)
   getTest(): string {
+    return this.appService.getStatus();
+  }
+
+  @Get('test/user')
+  @ApiBearerAuth()
+  @ApiOperation({
+    description: 'A private route for check the auth',
+  })
+  @ApiHeader({
+    description: 'the token we need for auth.',
+    name: 'Bearer',
+  })
+  @ApiTags('Test')
+  @Roles('user')
+  @UseGuards(RolesGuard)
+  getTestUser(): string {
     return this.appService.getStatus();
   }
 

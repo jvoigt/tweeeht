@@ -19,21 +19,24 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    const adminUserConfig = this.config.get('OUTPUT_PROVIDER');
+    const adminUserConfig = this.config.get('ADMIN_USER');
     const newUser: Partial<User> = {
       password: createUserDto.username,
       roles: ['user'],
-      username: createUserDto.username,
+      username: createUserDto.password,
     };
 
     // when the username is configured in the environment
     // we will grant it more roles
     if (adminUserConfig && createUserDto.username === adminUserConfig) {
+      this.logger.debug(`New user is going to be an Admin. <3`);
       newUser.roles.push('admin');
     }
 
+    // FIXME: There is no realy validation, so in case of duplication or smth we just will send 500
     const createdUser = new this.userModel(newUser);
-    return await createdUser.save();
+    const savedUser = await createdUser.save();
+    return savedUser;
   }
 
   async findAll(): Promise<User[]> {

@@ -18,7 +18,7 @@ export class AuthService {
     }
 
     async login(loginAttempt: LoginUserDto) {
-        this.logger.log(`Login-Attempt for ${loginAttempt.username}`);
+        this.logger.debug(`Login-Attempt for ${loginAttempt.username}`);
         const userToAttempt = await this.usersService.findOneByUsername(loginAttempt.username);
 
         if (userToAttempt) {
@@ -30,17 +30,17 @@ export class AuthService {
             }
         }
 
-        this.logger.log(`Login-Attempt for ${loginAttempt.username}: DENIED!`);
+        this.logger.warn(`Login-Attempt for ${loginAttempt.username}: DENIED!`);
         throw new UnauthorizedException();
     }
 
     async validateUserByJwt(payload: JwtPayload) {
-        this.logger.log(`Validation-Attempt for ${payload.username}`);
+        this.logger.debug(`Validation-Attempt for ${payload.username}`);
 
         // This will be used when the user has already logged in and has a JWT
         const user = await this.usersService.findOneByUsername(payload.username);
 
-        this.logger.log(`Validation-Attempt for ${payload.username} ${user ? 'granted.' : 'denied.'}`);
+        this.logger.debug(`Valdidation-Attempt for ${payload.username} ${user ? 'granted.' : 'denied.'}`);
         if (user) {
             return this.createJwtPayload(user);
         } else {
