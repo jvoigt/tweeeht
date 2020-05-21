@@ -15,6 +15,9 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
     controllers: [AuthController],
+    exports: [
+        JwtModule,
+    ],
     imports: [
         ConfigModule,
         LoggerModule,

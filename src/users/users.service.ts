@@ -18,7 +18,7 @@ export class UsersService {
     this.logger.setContext('USERS');
   }
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const adminUserConfig = this.config.get('ADMIN_USER');
     const newUser: Partial<User> = {
       password: createUserDto.username,

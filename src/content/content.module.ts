@@ -4,11 +4,16 @@ import { DebugMessageService } from './debug-message/debug-message.service';
 import { StaticModule } from './static/static.module';
 import { ConfigModule } from 'config/config.module';
 import { LoggerModule } from 'logger/logger.module';
-import { MongoCollectionModule } from './mongo-collection/mongo-collection.module';
+import { StaticMongoCollectionModule } from './static-mongo-collection/static-mongo-collection.module';
 
 @Module({
   exports: [ContentService],
-  imports: [StaticModule, ConfigModule, LoggerModule, MongoCollectionModule],
+  imports: [
+    StaticModule,
+    ConfigModule,
+    LoggerModule,
+    StaticMongoCollectionModule,
+  ],
   providers: [ContentService, DebugMessageService],
 })
-export class ContentModule {}
+export class ContentModule { }
