@@ -1,15 +1,15 @@
-import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { ConfigService } from 'config/config.service';
 import { Messager } from 'content/messager.interface';
 import { TweehtLogger } from 'logger/tweeht-logger';
-import { Observable, throwError, from, of } from 'rxjs';
-import { TweeehtMessage } from 'tweeht-message.interface';
-import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { StaticCollection } from './static-collection.schema';
-import { CreateStaticCollectionDto } from './dto/static-collection.dto';
+import { from, Observable, throwError } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { TweeehtMessage } from 'tweeht-message.interface';
 import { User } from 'users/user.interface';
-import { map, tap, catchError, switchMap } from 'rxjs/operators';
+import { CreateStaticCollectionDto } from './dto/create-static-collection.dto';
+import { StaticCollection } from './static-collection.schema';
 
 @Injectable()
 export class StaticMongoCollectionService implements Messager {
@@ -19,7 +19,6 @@ export class StaticMongoCollectionService implements Messager {
     private config: ConfigService,
     private readonly logger: TweehtLogger,
     @InjectModel('StaticCollection') private staticCollectionModel: Model<StaticCollection>,
-    @InjectModel('User') private userModel: Model<User>,
   ) {
     this.logger.setContext(this.moduleName);
   }

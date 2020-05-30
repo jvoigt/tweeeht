@@ -1,19 +1,17 @@
-import { Controller, Post, HttpCode, HttpStatus, UseGuards, Get, Body, Req, Param, Put } from '@nestjs/common';
-import { StaticMongoCollectionService } from './static-mongo-collection.service';
-import { ApiOperation, ApiBearerAuth, ApiTags, ApiBody, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'auth/decorators/roles.decorator';
 import { RolesGuard } from 'auth/guards/roles.guard';
-import { CreateStaticCollectionDto, StaticCollectionDto } from './dto/static-collection.dto';
-import { User } from 'users/user.interface';
-import { UsersService } from 'users/users.service';
 import { TweehtLogger } from 'logger/tweeht-logger';
+import { CreateStaticCollectionDto } from './dto/create-static-collection.dto';
+import { StaticCollectionDto } from './dto/static-collection.dto';
+import { StaticMongoCollectionService } from './static-mongo-collection.service';
 
 @Controller('static-mongo-collection')
 export class StaticMongoCollectionController {
 
     constructor(
         private staticMongoCollectionService: StaticMongoCollectionService,
-        private usersService: UsersService,
         private logger: TweehtLogger,
     ) {
         this.logger.setContext('STATICMONGOCOLLECTIONCTRL')
