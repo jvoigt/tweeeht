@@ -5,6 +5,7 @@ import { UsersService } from '../users/users.service';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { AUTHCONST } from 'const/auth.const';
 import { TweehtLogger } from 'logger/tweeht-logger';
+import { JwtTokenDto } from './dto/jwt-token-messagen.dto';
 
 @Injectable()
 export class AuthService {
@@ -49,7 +50,7 @@ export class AuthService {
 
     }
 
-    createJwtPayload(user) {
+    createJwtPayload(user): JwtTokenDto {
         const data: JwtPayload = {
             roles: user.roles,
             username: user.username,

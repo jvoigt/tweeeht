@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,6 +10,7 @@ import { OutputModule } from './output/output.module';
 import { ShedulerModule } from './sheduler/sheduler.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from 'users/users.module';
+import { ExtractUserMiddleware } from 'middleware/extract-user.middleware';
 
 @Module({
   controllers: [AppController],
@@ -28,4 +29,11 @@ import { UsersModule } from 'users/users.module';
   ],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(ExtractUserMiddleware)
+      .forRoutes('*');
+  }
+}
+

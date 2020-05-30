@@ -20,7 +20,7 @@ export class UsersController {
         summary: 'Register a user',
     })
     @ApiBearerAuth()
-    @ApiBody({ type: [CreateUserDto] })
+    @ApiBody({ type: CreateUserDto })
     @ApiCreatedResponse({ type: 'string' })
     @ApiTags('users')
     @UseGuards(BearerAuthGuard)
@@ -30,8 +30,8 @@ export class UsersController {
         return (await this.usersService.create(createUserDto)).username;
     }
 
-    @ApiBearerAuth()
     @ApiTags('users')
+    @ApiBearerAuth()
     @UseGuards(BearerAuthGuard)
     @Get()
     async readAll() {
@@ -53,7 +53,7 @@ export class UsersController {
         async verifyUsername(@Req() req: Request, @Body() verifyUuidDto: VerifyUuidDto) {
             return await this.userService.verifyUsername(req, verifyUuidDto);
         }
-    
+
         @Post('login')
         @HttpCode(HttpStatus.OK)
         @ApiOperation({title: 'Login User',})
@@ -61,9 +61,7 @@ export class UsersController {
         async login(@Req() req: Request, @Body() loginUserDto: LoginUserDto) {
             return await this.userService.login(req, loginUserDto);
         }
-    
 
-    
         @Post('forgot-password')
         @HttpCode(HttpStatus.OK)
         @ApiOperation({title: 'Forgot password',})
@@ -71,7 +69,7 @@ export class UsersController {
         async forgotPassword(@Req() req: Request, @Body() createForgotPasswordDto: CreateForgotPasswordDto) {
             return await this.userService.forgotPassword(req, createForgotPasswordDto);
         }
-    
+
         @Post('forgot-password-verify')
         @HttpCode(HttpStatus.OK)
         @ApiOperation({title: 'Verfiy forget password code',})
@@ -79,7 +77,7 @@ export class UsersController {
         async forgotPasswordVerify(@Req() req: Request, @Body() verifyUuidDto: VerifyUuidDto) {
             return await this.userService.forgotPasswordVerify(req, verifyUuidDto);
         }
-    
+
         @Post('reset-password')
         @HttpCode(HttpStatus.OK)
         @ApiOperation({title: 'Reset password after verify reset password',})
@@ -92,7 +90,7 @@ export class UsersController {
         async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
             return await this.userService.resetPassword(resetPasswordDto);
         }
-    
+
         @Get('data')
         @UseGuards(AuthGuard('jwt'))
         @Roles('admin')
@@ -107,6 +105,6 @@ export class UsersController {
         findAll() {
             return this.userService.findAll();
         }
-    
+
         */
 }

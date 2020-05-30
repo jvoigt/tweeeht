@@ -1,31 +1,25 @@
-import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
-import { LoggerModule } from 'logger/logger.module';
-import { ConfigModule } from 'config/config.module';
-import { StaticMongoCollectionService } from './static-mongo-collection.service';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from 'config/config.module';
+import { LoggerModule } from 'logger/logger.module';
+import { UsersModule } from 'users/users.module';
 import { StaticCollectionSchema } from './static-collection.schema';
 import { StaticMongoCollectionController } from './static-mongo-collection.controller';
-import { ExtractUserMiddleware } from 'auth/middleware/extract-user.middleware';
-import { AuthModule } from 'auth/auth.module';
-import { UsersModule } from 'users/users.module';
+import { StaticMongoCollectionService } from './static-mongo-collection.service';
+import { UserSchema } from 'users/user.schema';
 
 @Module({
   controllers: [StaticMongoCollectionController],
   exports: [StaticMongoCollectionService],
   imports: [
-    AuthModule,
-    UsersModule,
     ConfigModule,
     LoggerModule,
-    MongooseModule.forFeature([{ name: 'StaticCollection', schema: StaticCollectionSchema }]),
+    MongooseModule.forFeature([
+      { name: 'StaticCollection', schema: StaticCollectionSchema },
+      { name: 'User', schema: UserSchema }
+    ]),
+    UsersModule,
   ],
   providers: [StaticMongoCollectionService],
 })
-export class StaticMongoCollectionModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(ExtractUserMiddleware)
-      .forRoutes(StaticMongoCollectionController);
-  }
-}
-
+export class StaticMongoCollectionModule { }
