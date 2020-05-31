@@ -5,11 +5,12 @@ import { Messager } from 'content/messager.interface';
 import { TweehtLogger } from 'logger/tweeht-logger';
 import { Model } from 'mongoose';
 import { from, Observable, throwError } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { TweeehtMessage } from 'tweeht-message.interface';
-import { User } from 'users/user.interface';
+import { catchError, map, tap, switchMap } from 'rxjs/operators';
 import { CreateStaticCollectionDto } from './dto/create-static-collection.dto';
 import { StaticCollection } from './static-collection.schema';
+import { TweeehtMessage } from 'tweeht-message.interface';
+import { User } from 'users/user.interface';
+import { threadId } from 'worker_threads';
 
 @Injectable()
 export class StaticMongoCollectionService implements Messager {
@@ -25,6 +26,8 @@ export class StaticMongoCollectionService implements Messager {
 
   getMessage(): Observable<TweeehtMessage> {
     return throwError(new Error('Not yet implemented'));
+
+
   }
 
   create(createStaticCollectionDto: CreateStaticCollectionDto, owners?: User[]): Observable<StaticCollection> {

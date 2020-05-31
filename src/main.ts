@@ -5,10 +5,8 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   // Setup App with logging
-  const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'warn', 'debug', 'log'],
-  });
-  app.useLogger(new TweehtLogger());
+  const app = await NestFactory.create(AppModule, {});
+  app.useLogger(app.get(TweehtLogger));
 
   // Setup Swagger
   const options = new DocumentBuilder()

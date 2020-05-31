@@ -14,24 +14,27 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigService } from 'config/config.service';
 import { TweehtLogger } from 'logger/tweeht-logger';
+import { JwtSecretService } from './jwt-from-secret.service';
 
 @Module({
     controllers: [AuthController],
     exports: [
         JwtModule,
+        JwtSecretService
     ],
     imports: [
         ConfigModule,
         LoggerModule,
         UsersModule,
         PassportModule,
+        // move to own JWT Module
         JwtModule.registerAsync({
-            imports: [LoggerModule, ConfigModule],
-            inject: [TweehtLogger, 'JWT_SECRET_FROM_CONFIG'],
-            useFactory: async (logger: TweehtLogger, jwtSecretFromConfig: string, ) => {
+            imports: [LoggerModule, AuthModule],
+            inject: [TweehtLogger, JwtSecretService],
+            useFactory: async (logger: TweehtLogger, jwtSecretService: JwtSecretService, ) => {
                 logger.setContext('JWTMODULE_FACTORY');
                 return {
-                    secret: jwtSecretFromConfig,
+                    secret: jwtSecretService.get(),
                     signOptions: { expiresIn: AUTHCONST.expiry },
                 };
             }
@@ -43,6 +46,7 @@ import { TweehtLogger } from 'logger/tweeht-logger';
         LocalStrategy,
         BearerStrategy,
         JwtStrategy,
+        JwtSecretService,
     ],
 })
 export class AuthModule { }

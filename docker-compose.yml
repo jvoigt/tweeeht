@@ -9,3 +9,6 @@ services:
       # MONGO_INITDB_ROOT_PASSWORD: changeme
     ports:
       - 27017:27017
+    volumes:
+      - ./mongodb:/opt/myfiles
+

@@ -7,6 +7,7 @@ import { AUTHCONST } from 'const/auth.const';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from 'config/config.service';
 import { TweehtLogger } from 'logger/tweeht-logger';
+import { JwtSecretService } from 'auth/jwt-from-secret.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -14,12 +15,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
         private authService: AuthService,
         private logger: TweehtLogger,
-        @Inject('JWT_SECRET_FROM_CONFIG') private jwtSecretFromConfig: string,
+        private jwtSecretService: JwtSecretService,
     ) {
         super({
             ignoreExpiration: false,
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: jwtSecretFromConfig
+            secretOrKey: jwtSecretService.get()
         });
         this.logger.setContext('JWTSTRATEGY');
     }
