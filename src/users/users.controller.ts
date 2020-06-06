@@ -1,10 +1,14 @@
-import { Controller, Get, Post, Body, UseGuards, Param, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiBearerAuth, ApiTags, ApiBody } from '@nestjs/swagger';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Roles } from 'auth/decorators/roles.decorator';
 import { BearerAuthGuard } from 'auth/guards/bearer-auth.guard';
-import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from 'auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'auth/guards/roles.guard';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
+import { User } from './user.interface';
+import { UserDto } from './dto/user.dto';
+import { Auth } from 'auth/decorators/auth.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -15,6 +19,9 @@ export class UsersController {
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
+    @UseGuards(BearerAuthGuard)
+    @Post()
+    // Swagger Defs
     @ApiOperation({
         description: 'Will Create a new User.',
         summary: 'Register a user',
@@ -23,29 +30,27 @@ export class UsersController {
     @ApiBody({ type: CreateUserDto })
     @ApiCreatedResponse({ type: 'string' })
     @ApiTags('users')
-    @UseGuards(BearerAuthGuard)
-    @Post()
     async register(@Body() createUserDto: CreateUserDto) {
         // FIXME: this may return sensible information...
+        // nah it doesn't^^
         return (await this.usersService.create(createUserDto)).username;
     }
 
+    @Get()
+    @Auth('admin')
+    @ApiOperation({
+        description: 'Only for available for Admin-User.',
+        summary: 'Read all User',
+    })
+    @ApiOkResponse({ type: [UserDto] })
     @ApiTags('users')
     @ApiBearerAuth()
-    @UseGuards(BearerAuthGuard)
-    @Get()
     async readAll() {
         return this.usersService.findAll();
     }
 
-    @UseGuards(JwtAuthGuard)
-    @Get(':username')
-    async findOne(@Param() params) {
-        console.log(params);
-        return this.usersService.findOneByUsername(params.username);
-    }
-
     /*
+    // Warning Boiler plate ahead
         @Post('verify-username')
         @HttpCode(HttpStatus.OK)
         @ApiOperation({title: 'Verify Username',})
