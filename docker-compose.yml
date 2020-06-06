@@ -11,4 +11,7 @@ services:
       - 27017:27017
     volumes:
       - ./mongodb:/opt/myfiles
+      - mongodbdata:/data/db
 
+volumes:
+  mongodbdata:
