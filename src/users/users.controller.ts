@@ -1,51 +1,62 @@
-import { Controller, Get, Post, Body, UseGuards, Param, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiBearerAuth, ApiTags, ApiBody } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { BearerAuthGuard } from 'auth/guards/bearer-auth.guard';
-import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from 'auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'auth/guards/roles.guard';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
+  constructor(private usersService: UsersService) {}
 
-    constructor(
-        private usersService: UsersService,
-    ) { }
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    description: 'Will Create a new User.',
+    summary: 'Register a user',
+  })
+  @ApiBearerAuth()
+  @ApiBody({ type: CreateUserDto })
+  @ApiCreatedResponse({ type: 'string' })
+  @ApiTags('users')
+  @UseGuards(BearerAuthGuard)
+  @Post()
+  async register(@Body() createUserDto: CreateUserDto) {
+    // FIXME: this may return sensible information...
+    return (await this.usersService.create(createUserDto)).username;
+  }
 
-    @Post()
-    @HttpCode(HttpStatus.CREATED)
-    @ApiOperation({
-        description: 'Will Create a new User.',
-        summary: 'Register a user',
-    })
-    @ApiBearerAuth()
-    @ApiBody({ type: CreateUserDto })
-    @ApiCreatedResponse({ type: 'string' })
-    @ApiTags('users')
-    @UseGuards(BearerAuthGuard)
-    @Post()
-    async register(@Body() createUserDto: CreateUserDto) {
-        // FIXME: this may return sensible information...
-        return (await this.usersService.create(createUserDto)).username;
-    }
+  @ApiTags('users')
+  @ApiBearerAuth()
+  @UseGuards(BearerAuthGuard)
+  @Get()
+  async readAll() {
+    return this.usersService.findAll();
+  }
 
-    @ApiTags('users')
-    @ApiBearerAuth()
-    @UseGuards(BearerAuthGuard)
-    @Get()
-    async readAll() {
-        return this.usersService.findAll();
-    }
+  @UseGuards(JwtAuthGuard)
+  @Get(':username')
+  async findOne(@Param() params) {
+    console.log(params);
+    return this.usersService.findOneByUsername(params.username);
+  }
 
-    @UseGuards(JwtAuthGuard)
-    @Get(':username')
-    async findOne(@Param() params) {
-        console.log(params);
-        return this.usersService.findOneByUsername(params.username);
-    }
-
-    /*
+  /*
         @Post('verify-username')
         @HttpCode(HttpStatus.OK)
         @ApiOperation({title: 'Verify Username',})

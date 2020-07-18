@@ -1,4 +1,4 @@
-import { Logger, Optional, Injectable, Scope, forwardRef, Inject } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 // import { TweehtLogger } from 'logger/tweeht-logger';
@@ -10,9 +10,8 @@ import * as fs from 'fs';
 export class ConfigService {
   private readonly envConfig: Record<string, string>;
 
-  constructor(
+  constructor() {
     // private readonly logger: TweehtLogger,
-  ) {
     // this.logger.setContext('CONFIG');
 
     // select config file by Node ENV or use development.env as fallback

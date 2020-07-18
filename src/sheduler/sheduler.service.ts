@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { TweehtLogger } from 'logger/tweeht-logger';
 import { Observable } from 'rxjs';
 import { IntervalService } from './interval/interval.service';
 import { Ticker } from './ticker.interface';
-import { TweehtLogger } from 'logger/tweeht-logger';
 
 @Injectable()
 export class ShedulerService {

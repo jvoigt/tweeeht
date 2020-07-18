@@ -1,14 +1,18 @@
-import { Controller, Get, UseGuards, Request, Post } from '@nestjs/common';
-import { AppService } from './app.service';
-import { RolesGuard } from 'auth/guards/roles.guard';
-import { BearerAuthGuard } from 'auth/guards/bearer-auth.guard';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiHeader,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Roles } from 'auth/decorators/roles.decorator';
-import { ApiBearerAuth, ApiOperation, ApiHeader, ApiTags } from '@nestjs/swagger';
-
+import { BearerAuthGuard } from 'auth/guards/bearer-auth.guard';
+import { RolesGuard } from 'auth/guards/roles.guard';
+import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService) {}
 
   @UseGuards(BearerAuthGuard)
   @Get()
