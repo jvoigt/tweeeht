@@ -1,11 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from 'config/config.service';
+import { TweehtLogger } from 'logger/tweeht-logger';
 import { tap } from 'rxjs/operators';
 import { TweeehtMessage } from '../tweeht-message.interface';
 import { DebugMessageService } from './debug-message/debug-message.service';
 import { Messager } from './messager.interface';
+import { StaticMongoCollectionService } from './static-mongo-collection/static-mongo-collection.service';
 import { StaticService } from './static/static.service';
-import { TweehtLogger } from 'logger/tweeht-logger';
 
 @Injectable()
 export class ContentService {
@@ -15,6 +16,7 @@ export class ContentService {
     private config: ConfigService,
     private debugMessage: DebugMessageService,
     private staticService: StaticService,
+    private collectionService: StaticMongoCollectionService,
     private readonly logger: TweehtLogger,
   ) {
     this.logger.setContext('CONTENT');
@@ -27,6 +29,9 @@ export class ContentService {
     switch (contentConfig) {
       case 'STATIC':
         this.messager = this.staticService;
+        break;
+      case 'STATIC_MONGO_COLLECTION':
+        this.messager = this.collectionService;
         break;
       case 'DEBUG':
       default:

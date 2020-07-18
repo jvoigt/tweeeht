@@ -1,10 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from 'config/config.service';
+import { TweehtLogger } from 'logger/tweeht-logger';
 import { TweeehtMessage } from 'tweeht-message.interface';
+import { DebugOutputService } from './debug-output/debug-output.service';
 import { Poster } from './poster.interface';
 import { TwitService } from './twit/twit.service';
-import { TweehtLogger } from 'logger/tweeht-logger';
-import { DebugOutputService } from './debug-output/debug-output.service';
-import { ConfigService } from 'config/config.service';
 
 @Injectable()
 export class OutputService {
@@ -41,7 +41,7 @@ export class OutputService {
 
   send(message: TweeehtMessage) {
     this.logger.debug(`SEND: ${message.text}`);
-    this.poster.post(message).subscribe(result => {
+    this.poster.post(message).subscribe((result) => {
       this.logger.debug(`SENT: ${result.text}`);
     });
   }

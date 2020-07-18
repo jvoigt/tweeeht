@@ -8,13 +8,14 @@
     "indent": [true, "spaces", 2],
     "quotemark": [true, "single"],
     "member-access": [false],
-    "ordered-imports": [false],
-    "max-line-length": [true, 80],
+    "ordered-imports": [true],
+    "max-line-length": [true, 120],
     "member-ordering": [false],
     "interface-name": [false],
     "no-console": false,
     "arrow-parens": false,
-    "object-literal-sort-keys": true
+    "object-literal-sort-keys": true,
+    "no-unused-variable": true
   },
   "rulesDirectory": []
 }
