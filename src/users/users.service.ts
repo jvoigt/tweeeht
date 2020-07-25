@@ -20,15 +20,15 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     const adminUserConfig = this.config.get('ADMIN_USER');
     const newUser: Partial<User> = {
-      password: createUserDto.username,
+      password: createUserDto.password,
       roles: ['user'],
-      username: createUserDto.password,
+      username: createUserDto.username,
     };
 
     // when the username is configured in the environment
     // we will grant it more roles
     if (adminUserConfig && createUserDto.username === adminUserConfig) {
-      this.logger.debug(`New user is going to be an Admin. <3`);
+      this.logger.log(`New user is going to be an Admin. <3`);
       newUser.roles.push('admin');
     }
 

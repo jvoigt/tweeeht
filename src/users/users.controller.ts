@@ -1,35 +1,37 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'auth/decorators/auth.decorator';
-import { BearerAuthGuard } from 'auth/guards/bearer-auth.guard';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UserDto } from './dto/user.dto';
-import { UsersService } from './users.service';
+import { CreateUserDto } from 'users/dto/create-user.dto';
+import { UserDto } from 'users/dto/user.dto';
+import { UsersService } from 'users/users.service';
+import { TweehtLogger } from 'logger/tweeht-logger';
 
 @Controller('users')
 export class UsersController {
 
   constructor(
+    private logger: TweehtLogger,
     private usersService: UsersService,
-  ) { }
+  ) {
+    this.logger.setContext('UsersController')
+  }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(BearerAuthGuard)
   @Post()
   // Swagger Defs
   @ApiOperation({
     description: 'Will Create a new User.',
     summary: 'Register a user',
   })
-  @ApiBearerAuth()
   @ApiBody({ type: CreateUserDto })
   @ApiCreatedResponse({ type: 'string' })
   @ApiTags('users')
   async register(@Body() createUserDto: CreateUserDto) {
-    // FIXME: this may return sensible information...
-    // nah it doesn't^^
-    return (await this.usersService.create(createUserDto)).username;
+    this.logger.log(`register: Req for ${createUserDto.username}`)
+    const newUser = await this.usersService.create(createUserDto);
+    this.logger.log(`register: Resp for ${newUser.username}`)
+    return newUser.username;
   }
 
   @Get()

@@ -1,7 +1,9 @@
-import { Injectable, Logger, LogLevel } from '@nestjs/common';
+import { Injectable, Logger, LogLevel, Scope } from '@nestjs/common';
 import { ConfigService } from 'config/config.service';
 
-@Injectable()
+@Injectable({
+  scope: Scope.TRANSIENT
+})
 export class TweehtLogger extends Logger {
   private static levels: LogLevel[] = [
     'verbose',

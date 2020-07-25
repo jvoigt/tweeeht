@@ -2,11 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { TweehtLogger } from 'logger/tweeht-logger';
 import { AppModule } from './app.module';
+import { ConfigService } from 'config/config.service';
 
 async function bootstrap() {
   // Setup App with logging
   const app = await NestFactory.create(AppModule, {});
-  app.useLogger(app.get(TweehtLogger));
+  app.useLogger(new TweehtLogger(app.get(ConfigService)));
 
   // Setup Swagger
   const options = new DocumentBuilder()

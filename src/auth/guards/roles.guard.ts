@@ -15,11 +15,12 @@ export class RolesGuard extends AuthGuard('jwt') {
     private logger: TweehtLogger,
   ) {
     super();
-    this.logger.setContext('ROLES_GUARD');
+    this.logger.setContext('RolesGuard');
   }
 
   handleRequest(err, user, info: Error, context: ExecutionContext) {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
+    this.logger.debug(`Guarding ${context.getClass().name} / ${context.getHandler().name}.`);
 
     if (!roles) {
       this.logger.warn(`No Roles for Guarding set. Denied!`);
@@ -38,9 +39,9 @@ export class RolesGuard extends AuthGuard('jwt') {
     }
 
     const guardJudgement = user && user.roles && hasRole();
-    this.logger.debug(
+    this.logger.verbose(
       `Guarding ${context.getClass().name} / ${context.getHandler().name}: ${
-        guardJudgement ? 'granted' : 'denied'
+      guardJudgement ? 'granted' : 'denied'
       }.`,
     );
 

@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AUTHCONST } from 'const/auth.const';
 import { TweehtLogger } from 'logger/tweeht-logger';
-import { UsersService } from '../users/users.service';
+import { UsersService } from 'users/users.service';
 import { JwtTokenDto } from './dto/jwt-token-messagen.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
@@ -14,7 +14,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {
-    this.logger.setContext('AUTH');
+    this.logger.setContext('AuthService');
   }
 
   async login(loginAttempt: LoginUserDto) {
