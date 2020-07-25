@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from 'config/config.module';
+import { LoggerModule } from 'logger/logger.module';
+import { UserSchema } from './user.schema';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { UserSchema } from './user.schema';
-import { LoggerModule } from 'logger/logger.module';
-import { ConfigModule } from 'config/config.module';
 
 @Module({
   controllers: [UsersController],
@@ -16,4 +16,4 @@ import { ConfigModule } from 'config/config.module';
   ],
   providers: [UsersService],
 })
-export class UsersModule { }
+export class UsersModule {}

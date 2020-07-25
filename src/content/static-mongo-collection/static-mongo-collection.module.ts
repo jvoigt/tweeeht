@@ -5,7 +5,6 @@ import { LoggerModule } from 'logger/logger.module';
 import { StaticCollectionSchema } from './static-collection.schema';
 import { StaticMongoCollectionController } from './static-mongo-collection.controller';
 import { StaticMongoCollectionService } from './static-mongo-collection.service';
-import { UserSchema } from 'users/user.schema';
 
 @Module({
   controllers: [StaticMongoCollectionController],
@@ -16,8 +15,7 @@ import { UserSchema } from 'users/user.schema';
     MongooseModule.forFeature([
       { name: 'StaticCollection', schema: StaticCollectionSchema },
     ]),
-
   ],
   providers: [StaticMongoCollectionService],
 })
-export class StaticMongoCollectionModule { }
+export class StaticMongoCollectionModule {}

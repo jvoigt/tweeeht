@@ -1,13 +1,13 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from 'config/config.service';
 import { TWITCONST } from 'const/twit.const';
+import { TweehtLogger } from 'logger/tweeht-logger';
 import { Poster } from 'output/poster.interface';
 import * as path from 'path';
 import { Observable, of, ReplaySubject, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { TweeehtMessage, TweeehtMessageStatus } from 'tweeht-message.interface';
 import * as Twit from 'twit';
-import { TweehtLogger } from 'logger/tweeht-logger';
 
 @Injectable()
 export class TwitService implements Poster {

@@ -1,10 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from 'config/config.service';
 import { INTERVALCONST } from 'const/interval.const';
-import { interval, Observable } from 'rxjs';
-import { startWith, tap } from 'rxjs/operators';
-import { Ticker } from 'sheduler/ticker.interface';
 import { TweehtLogger } from 'logger/tweeht-logger';
+import { interval, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { Ticker } from 'sheduler/ticker.interface';
 
 @Injectable()
 export class IntervalService implements Ticker {

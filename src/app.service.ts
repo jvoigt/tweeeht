@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from 'config/config.service';
 import { TweehtLogger } from 'logger/tweeht-logger';
 import { switchMap } from 'rxjs/operators';
 import { ShedulerService } from 'sheduler/sheduler.service';
 import { ContentService } from './content/content.service';
 import { OutputService } from './output/output.service';
 import { TweeehtMessage } from './tweeht-message.interface';
-import { ConfigService } from 'config/config.service';
 
 @Injectable()
 export class AppService {
@@ -16,15 +16,12 @@ export class AppService {
     private shedulerService: ShedulerService,
     private readonly logger: TweehtLogger,
   ) {
-
     this.logger.setContext('APP');
 
-    const loopConfig = !JSON.parse(config.get('DISABLE_LOOP'));
+    const loopConfig = !JSON.parse(this.config.get('DISABLE_LOOP'));
     this.logger.debug(`loopConfig: ${loopConfig}`);
 
-    this.logger.log(
-      `Main Loop ${(loopConfig ? 'enabled' : 'disabled')}`,
-    );
+    this.logger.log(`Main Loop ${loopConfig ? 'enabled' : 'disabled'}`);
     if (loopConfig) {
       this.start();
     }

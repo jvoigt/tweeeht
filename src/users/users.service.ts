@@ -1,15 +1,14 @@
-import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './user.interface';
-import { TweehtLogger } from 'logger/tweeht-logger';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from 'config/config.service';
+import { TweehtLogger } from 'logger/tweeht-logger';
+import { Model } from 'mongoose';
+import { CreateUserDto } from './dto/create-user.dto';
+import { User } from './user.interface';
 
 @Injectable()
 export class UsersService {
-
   constructor(
     @InjectModel('User') private userModel: Model<User>,
     private logger: TweehtLogger,
@@ -56,6 +55,5 @@ export class UsersService {
 
   async checkPassword(attemptPassword, user: User) {
     return bcrypt.compare(attemptPassword, user.password);
-
   }
 }
