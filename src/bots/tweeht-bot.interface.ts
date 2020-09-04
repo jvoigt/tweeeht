@@ -5,14 +5,14 @@
  */
 export class TweeehtBot {
   /** primary Id */
-  id: string;
+  id?: string;
   /**usernames of owners */
   owners: string[];
   /** nice name so you can find your bot */
   name: string;
-  sheduler: any; //FIXME: add proper type
-  output: any;  //FIXME: add proper type
-  content: any; //FIXME: add proper type
+  sheduler?: any; //FIXME: add proper type
+  output?: any;  //FIXME: add proper type
+  content?: any; //FIXME: add proper type
 }
 
 // class TweeehtUser {

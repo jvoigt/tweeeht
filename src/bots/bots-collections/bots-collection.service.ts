@@ -2,14 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { TweehtLogger } from 'logger/tweeht-logger';
 import { Model } from 'mongoose';
-import { from, Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { from, Observable, of, Subject } from 'rxjs';
+import { catchError, tap, filter, map } from 'rxjs/operators';
 import { TweeehtBot } from '../tweeht-bot.interface';
 import { BotDocument } from './bots.schema';
 import { mapToBot, mapToBots, mapBotToDocument } from './mapBotDocumet';
 
 @Injectable()
 export class BotsCollectionService {
+
   constructor(
     @InjectModel(BotDocument.name) private botModel: Model<BotDocument>,
     private logger: TweehtLogger,
@@ -46,6 +47,8 @@ export class BotsCollectionService {
   readAll(): Observable<TweeehtBot[]> {
     this.logger.verbose(`Read all TweeehtBot.`);
 
+    // TODO: 
+    // we should better look for the change stream an emit changes as subject so we could realy use some rx magic
     return from(this.botModel.find().exec()).pipe(
       mapToBots()
     )
@@ -84,6 +87,8 @@ export class BotsCollectionService {
   /**
    * will delete one bots from the DB
    * will query by the id
+   * when nothing found it will emit null
+   *
    * @param deleteBot the TweeehtBot
    */
   delete(deleteBot: TweeehtBot): Observable<TweeehtBot> {

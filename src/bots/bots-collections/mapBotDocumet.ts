@@ -4,6 +4,10 @@ import { BotDocument } from "./bots.schema";
 import { TweeehtBot } from "bots/tweeht-bot.interface";
 
 export function mapBotToDocument(bot: TweeehtBot): Partial<BotDocument> {
+  if (!bot) {
+    return null;
+  }
+
   const doc: Partial<BotDocument> = {
     name: bot.name,
     owners: bot.owners,
@@ -33,6 +37,10 @@ export function mapToBots<T>() {
 }
 
 function mapDocumentToBot(doc: BotDocument): TweeehtBot {
+  if (!doc) {
+    return null;
+  }
+
   const bot: TweeehtBot = {
     name: doc.name,
     id: doc._id,
