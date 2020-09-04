@@ -10,7 +10,7 @@ export class DebugOutputService implements Poster {
     moduleName = 'DebugOutput';
 
     constructor(config: ConfigService, private readonly logger: TweehtLogger) {
-        this.logger.setContext('DEBUGOUTPUT');
+        this.logger.setContext('DebugOutputService');
     }
 
     post(message: TweeehtMessage): Observable<TweeehtMessage> {

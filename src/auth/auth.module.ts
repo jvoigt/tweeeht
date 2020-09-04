@@ -30,7 +30,7 @@ import { LocalStrategy } from './strategies/local.strategy';
         logger: TweehtLogger,
         jwtSecretService: JwtSecretService,
       ) => {
-        logger.setContext('JWTMODULE_FACTORY');
+        logger.setContext('JwtModuleFactory');
         return {
           secret: jwtSecretService.get(),
           signOptions: { expiresIn: AUTHCONST.expiry },

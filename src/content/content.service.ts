@@ -19,7 +19,7 @@ export class ContentService {
     private collectionService: StaticMongoCollectionService,
     private readonly logger: TweehtLogger,
   ) {
-    this.logger.setContext('CONTENT');
+    this.logger.setContext('ContentService');
 
     const contentConfig = this.config.get('CONTENT_PROVIDER');
     this.logger.debug(`Got CONTENT_PROVIDER: ${contentConfig}`);

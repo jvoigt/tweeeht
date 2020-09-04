@@ -27,7 +27,7 @@ export class MongooseConfigService implements MongooseOptionsFactory {
     );
     this.logger.log(
       `Found Config for ${dbUser ? 'a ' : 'no '} MongoUser ${
-        dbPassword ? 'with' : 'without'
+      dbPassword ? 'with' : 'without'
       } a Password.`,
     );
     return {

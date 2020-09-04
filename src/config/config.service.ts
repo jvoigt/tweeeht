@@ -12,7 +12,7 @@ export class ConfigService {
 
   constructor() {
     // private readonly logger: TweehtLogger,
-    // this.logger.setContext('CONFIG');
+    // this.logger.setContext('ConfigService');
 
     // select config file by Node ENV or use development.env as fallback
     const filePath = `${process.env.NODE_ENV || 'development'}.env`;

@@ -12,7 +12,7 @@ export class AdminAuthService {
         private config: ConfigService,
         private logger: TweehtLogger,
     ) {
-        this.logger.setContext('ADMINAUTH');
+        this.logger.setContext('AdminAuthService');
 
         const username = this.config.get('ADMIN_USERNAME') || 'admin';
         const password = this.config.get('ADMIN_PASSWORD') || 'admin';

@@ -14,7 +14,7 @@ export class UsersService {
     private logger: TweehtLogger,
     private config: ConfigService,
   ) {
-    this.logger.setContext('USERS');
+    this.logger.setContext('UsersService');
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {

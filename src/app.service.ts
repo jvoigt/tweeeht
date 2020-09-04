@@ -16,7 +16,7 @@ export class AppService {
     private shedulerService: ShedulerService,
     private readonly logger: TweehtLogger,
   ) {
-    this.logger.setContext('APP');
+    this.logger.setContext('AppService');
 
     const loopConfig = !JSON.parse(this.config.get('DISABLE_LOOP'));
     this.logger.debug(`loopConfig: ${loopConfig}`);

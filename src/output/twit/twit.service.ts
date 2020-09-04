@@ -18,7 +18,7 @@ export class TwitService implements Poster {
   private bypassPost: boolean;
 
   constructor(config: ConfigService, private readonly logger: TweehtLogger) {
-    this.logger.setContext('TWIT');
+    this.logger.setContext('TwitService');
     const twitOptions = {
       access_token: config.get('TWITTER_ACCESS_TOKEN'),
       access_token_secret: config.get('TWITTER_ACCESS_TOKEN_SECRET'),

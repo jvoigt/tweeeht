@@ -9,7 +9,7 @@ export class JwtSecretService {
     private readonly logger: TweehtLogger,
     private readonly config: ConfigService,
   ) {
-    this.logger.setContext('JWTSECRETSERVICE');
+    this.logger.setContext('JwtSecretService');
   }
 
   get(): string {

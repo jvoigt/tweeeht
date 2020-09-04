@@ -16,7 +16,7 @@ export class OutputService {
     private readonly logger: TweehtLogger,
     private twitService: TwitService,
   ) {
-    this.logger.setContext('OUTPUT');
+    this.logger.setContext('OutputService');
 
     const outputConfig = this.config.get('OUTPUT_PROVIDER');
     this.logger.debug(`Got OUTPUT_PROVIDER: ${outputConfig}`);
