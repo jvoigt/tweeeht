@@ -1,3 +1,5 @@
+import { User } from "users/user.interface";
+
 /**
  * this is the main defintion of a BotObj
  * 
@@ -7,7 +9,7 @@ export class TweeehtBot {
   /** primary Id */
   id?: string;
   /**usernames of owners */
-  owners: string[];
+  owners: User[];
   /** nice name so you can find your bot */
   name: string;
   sheduler?: any; //FIXME: add proper type

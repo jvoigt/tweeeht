@@ -11,10 +11,12 @@ import { LoggerModule } from './logger/logger.module';
 import { MongooseConfigService } from './mongoose-config.service';
 import { OutputModule } from './output/output.module';
 import { ShedulerModule } from './sheduler/sheduler.module';
+import { BotModule } from 'bots/bots.module';
 
 @Module({
   controllers: [AppController],
   imports: [
+    BotModule,
     OutputModule,
     ShedulerModule,
     AuthModule,

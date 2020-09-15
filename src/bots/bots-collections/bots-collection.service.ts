@@ -4,9 +4,10 @@ import { TweehtLogger } from 'logger/tweeht-logger';
 import { Model } from 'mongoose';
 import { from, Observable, of, Subject } from 'rxjs';
 import { catchError, tap, filter, map } from 'rxjs/operators';
-import { TweeehtBot } from '../tweeht-bot.interface';
+import { TweeehtBot } from '../tweeht-bot';
 import { BotDocument } from './bots.schema';
-import { mapToBot, mapToBots, mapBotToDocument } from './mapBotDocumet';
+import { UsersService } from 'users/users.service';
+import { User } from 'users/user.interface';
 
 @Injectable()
 export class BotsCollectionService {
@@ -14,6 +15,7 @@ export class BotsCollectionService {
   constructor(
     @InjectModel(BotDocument.name) private botModel: Model<BotDocument>,
     private logger: TweehtLogger,
+    private usersService: UsersService,
     // private config: ConfigService,
   ) {
     this.logger.setContext('BotsCollectionService');
@@ -33,7 +35,7 @@ export class BotsCollectionService {
         this.logger.error(`Error while creating new TweeehtBot:${TweeehtBot.name} - ${err}`);
         throw err
       }),
-      mapToBot()
+      this.mapToBot()
     )
     this.logger.debug(`Created new TweeehtBot:${TweeehtBot.name}`);
     return savedBot;
@@ -50,7 +52,7 @@ export class BotsCollectionService {
     // TODO: 
     // we should better look for the change stream an emit changes as subject so we could realy use some rx magic
     return from(this.botModel.find().exec()).pipe(
-      mapToBots()
+      this.mapToBots()
     )
   }
 
@@ -61,7 +63,7 @@ export class BotsCollectionService {
   readOne(id: string): Observable<TweeehtBot> {
     this.logger.verbose(`Read a TweeehtBot by id: ${id}`);
     return from(this.botModel.findById(id).exec()).pipe(
-      mapToBot()
+      this.mapToBot()
     )
   }
 
@@ -75,12 +77,12 @@ export class BotsCollectionService {
 
     return from(this.botModel.findByIdAndUpdate(
       newBot.id,
-      mapBotToDocument(newBot),
+      this.mapBotToDocument(newBot),
       {
         new: true
       }
     ).exec()).pipe(
-      mapToBot()
+      this.mapToBot()
     )
   }
 
@@ -95,7 +97,61 @@ export class BotsCollectionService {
     this.logger.verbose(`Delete a TweeehtBot: ${deleteBot.name}`);
 
     return from(this.botModel.findByIdAndDelete(deleteBot.id).exec()).pipe(
-      mapToBot()
+      this.mapToBot()
     )
+  }
+
+  private mapBotToDocument(bot: TweeehtBot): Partial<BotDocument> {
+    if (!bot) {
+      return null;
+    }
+
+    const doc: Partial<BotDocument> = {
+      name: bot.name,
+      ownerNames: bot.owners.map((owner: User) => owner.username),
+    };
+    return doc;
+  }
+
+  private mapToBot<T>() {
+    return function (source$: Observable<BotDocument>) {
+      return source$.pipe(
+        map((doc: BotDocument) => this.mapDocumentToBot(doc))
+      );
+    }
+  }
+  private mapToBots<T>() {
+    return function (source$: Observable<BotDocument[]>) {
+      return source$.pipe(
+        map((docs: BotDocument[]) => {
+          return docs.map(
+            (doc: BotDocument) =>
+              this.mapDocumentToBot(doc)
+          )
+        }
+        )
+      );
+    }
+  }
+
+  private mapDocumentToBot(doc: BotDocument): Promise<TweeehtBot> {
+    if (!doc) {
+      return null;
+    }
+    const owners: User[] = [];
+    doc.ownerNames.forEach(async (name: string) => {
+      owners.push(await this.usersService.findOneByUsername(name));
+    });
+
+
+    const bot: TweeehtBot = {
+      name: doc.name,
+      id: doc._id,
+      owners: owners,
+      content: undefined,
+      output: undefined,
+      sheduler: undefined,
+    };
+    return bot;
   }
 }

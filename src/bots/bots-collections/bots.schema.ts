@@ -7,7 +7,7 @@ export class BotDocument extends Document {
   name: string;
 
   @Prop({ required: true })
-  owners: string[];
+  ownerNames: string[];
 }
 
 export const BotSchema = SchemaFactory.createForClass(BotDocument);
